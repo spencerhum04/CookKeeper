@@ -1,15 +1,41 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-export default function ModalForm({ isOpen, onClose, mode, onSubmit } : {isOpen: boolean, onClose: () => void, mode: string, onSubmit: () => void}) {
+type RecipeData = {
+    title: string;
+    meal: string;
+    time: string;
+}
 
-    const [title, setTitle ] = useState('');
-    const [time, setTime ] = useState('');
-    const [meal, setMeal ] = useState('');
 
-    const handleSubmit = (e) => {
+
+export default function ModalForm({ isOpen, onClose, mode, onSubmit, recipeData } : { isOpen: boolean, onClose: () => void, mode: string, onSubmit: () => void, recipeData: RecipeData }) {
+
+    const [title, setTitle] = useState('');
+    const [meal, setMeal] = useState('');
+    const [time, setTime] = useState('');
+    
+    const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        try {
+            const recipeData = {title, meal, time}
+            await onSubmit(recipeData)
+        } catch(err) {
+            console.log("Error adding recipe", err)
+        }
         onClose();
     }
+
+    useEffect(() => {
+        if(mode === 'edit' && recipeData) {
+            setTitle(recipeData.title);
+            setMeal(recipeData.meal);
+            setTime(recipeData.time);
+        } else {
+            setTitle('');
+            setMeal('');
+            setTime('');
+        }
+    }, [mode, recipeData]);
 
     if (!isOpen) return null;
     
