@@ -8,27 +8,25 @@ type Recipe = {
     time: string;
 }
 
-export default function TableList({ handleOpen, searchTerm } : { handleOpen: (mode: 'add' | 'edit') => void, searchTerm: string }) {
-
-    const [tableData, setTableData] = useState<Recipe[]>([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://localhost:3000/api/recipe');
-                setTableData(response.data);
-            } catch (err) {
-                console.log('Error fetching data', err)
-            }
-        }
-        fetchData();
-    }, []);
+export default function TableList({ handleOpen, tableData, setTableData, searchTerm } : { handleOpen: (mode: 'add' | 'edit') => void, searchTerm: string }) {
 
     const filteredData = tableData.filter(recipe =>
         recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         recipe.meal.toLowerCase().includes(searchTerm.toLowerCase()) ||
         recipe.time.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleDelete = async(id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this recipe?");
+        if(confirmDelete) {
+            try {
+                await axios.delete(`http://localhost:3000/recipe/${id}`);
+                setTableData((prevData) => prevData.filter(recipe => recipe.id !== id));
+            } catch (err) {
+                console.log('Error deleting recipe', err);
+            }
+        }
+    }
 
     const headers = [
         { title: ""},
@@ -56,10 +54,10 @@ export default function TableList({ handleOpen, searchTerm } : { handleOpen: (mo
                                 <td className="py-2">{recipe.meal}</td>
                                 <td className="py-2">{recipe.time}</td>
                                 <td>
-                                    <button onClick={() => handleOpen('edit')} className={`rounded-full bg-slate-200 hover:bg-slate-300 w-20`}>Edit</button>
+                                    <button onClick={() => handleOpen('edit', recipe)} className={`rounded-full bg-slate-200 hover:bg-slate-300 w-20`}>Edit</button>
                                 </td>
                                 <td>
-                                    <button className={`rounded-full bg-slate-200 hover:bg-slate-300 w-20`}>Delete</button>
+                                    <button onClick={() => handleDelete(recipe.id)} className={`rounded-full bg-slate-200 hover:bg-slate-300 w-20`}>Delete</button>
                                 </td>
                             </tr>
                         ))}

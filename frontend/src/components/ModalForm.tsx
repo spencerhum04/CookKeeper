@@ -19,6 +19,7 @@ export default function ModalForm({ isOpen, onClose, mode, onSubmit, recipeData 
         try {
             const recipeData = {title, meal, time}
             await onSubmit(recipeData)
+            onClose();
         } catch(err) {
             console.log("Error adding recipe", err)
         }
