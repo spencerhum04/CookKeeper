@@ -54,10 +54,10 @@ export default function TableList({ handleOpen, tableData, setTableData, searchT
                                 <td className="py-2">{recipe.meal}</td>
                                 <td className="py-2">{recipe.time}</td>
                                 <td>
-                                    <button onClick={() => handleOpen('edit', recipe)} className={`rounded-full bg-slate-200 hover:bg-slate-300 w-20`}>Edit</button>
+                                    <button onClick={() => handleOpen('edit', recipe)} className={`rounded-full bg-blue-200 hover:bg-blue-300 w-20`}>Edit</button>
                                 </td>
                                 <td>
-                                    <button onClick={() => handleDelete(recipe.id)} className={`rounded-full bg-slate-200 hover:bg-slate-300 w-20`}>Delete</button>
+                                    <button onClick={() => handleDelete(recipe.id)} className={`rounded-full bg-red-200 hover:bg-red-300 w-20`}>Delete</button>
                                 </td>
                             </tr>
                         ))}
